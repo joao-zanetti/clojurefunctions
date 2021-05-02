@@ -123,4 +123,24 @@
     (println "Thetotalrevenueis " @revenue-promise)))
 
 (def f (future (Thread/sleep 10000) (println "done") 100))
+
+; FUNCTIONS FOR PARAMETER
+(defn arithmetic-if [n pos-fzero-fneg-f] 
+  (cond 
+    (pos? n) (pos-f) 
+    (zero? n) (zero-f) 
+    (neg? n) (neg-f)))
+
+(defn print-rating [rating] 
+  (arithmetic-if rating #(println "Goodbook!") #(println "Totallyindifferent.") #(println "Runaway!")))
+
+(defn print-rating-b [rating]
+  (arithmetic-if rating '(println "Goodbook!") '(println "Totallyindifferent.") '(println "Runaway!")))
+
+(defmacro recebe-funcoes [n fa fb fc]
+  (cond
+    (string? n) fa
+    (= n 2) fb
+    (= n 3) fc
+    :else ""))
   
