@@ -78,3 +78,49 @@
 
 (defn testo [{:keys [a ab]}] (prn a))
 ;(testo {:a 1 :ab "3"})
+
+
+
+;; ATOM
+(def counter (atom 0))
+;(pmap #(swap! counter (fn [x] (+ % x))) [1 1 1 1])
+
+
+
+;; THREAD
+(defn do-something-in-a-thread []
+  (println "Hellofromthe thread.")
+  (Thread/sleep 3000)
+  (println "Goodbye fromthe thread.")
+  (swap! counter inc))
+
+(def the-thread-a (Thread. do-something-in-a-thread))
+(def the-thread-b (Thread. do-something-in-a-thread))
+(def the-thread-c (Thread. do-something-in-a-thread))
+
+
+(defn call-threads []
+  (do (.start the-thread-a)
+      (.start the-thread-b)
+      (.start the-thread-c)))
+
+(def inventory [{:title "Emma" :sold 51 :revenue 255}
+                {:title "2001" :sold 17 :revenue 170}])
+
+(defn sum-copies-sold [inv] (apply + (map :sold inv))) 
+(defn sum-revenue [inv] (apply + (map :revenue inv)))
+
+
+(defn call-promises []
+  (let [copies-promise (promise)
+        revenue-promise (promise)]
+    (.start (Thread. #(deliver copies-promise (sum-copies-sold inventory))))
+    (.start (Thread. #(deliver revenue-promise (sum-revenue inventory))))
+
+    (.start ())
+                       ;; Do someotherstuffin thisthread...
+    (println "Thetotalnumberof bookssoldis" @copies-promise)
+    (println "Thetotalrevenueis " @revenue-promise)))
+
+(def f (future (Thread/sleep 10000) (println "done") 100))
+  
