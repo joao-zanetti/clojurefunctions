@@ -57,7 +57,7 @@
 
 
 ;SPEC TEST DRIVE DEVELOPMENT
-(defnbook-blurb [book] (str "Thebestsellingbook" (:titlebook) " by " (:authorbook)))
+;(defn book-blurb [book] (str "Thebestsellingbook" (:titlebook) " by " (:authorbook)))
 
 ;; (s/fdef book-blurb
 ;;   :args (s/cat :book ::book)
