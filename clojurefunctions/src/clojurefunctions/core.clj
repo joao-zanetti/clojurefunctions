@@ -1,5 +1,5 @@
 (ns clojurefunctions.core
-  (:gen-class))
+  (:require [clojurefunctions.specs :as sp]))
 
 ;;MULTIMETHOD
 (defn dispatch-book-format [book]
@@ -75,3 +75,6 @@
                      :died 1817}})
 
 ;; (let [{{dad :father mom :mother} :parents} austen]))
+
+(defn testo [{:keys [a ab]}] (prn a))
+;(testo {:a 1 :ab "3"})
