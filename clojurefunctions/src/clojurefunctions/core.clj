@@ -144,6 +144,11 @@
              (list 'zero? n) zero
              :else neg))
 
+(defmacro arithmetic-if [n pos zero neg]
+  `(cond (pos? ~n) ~pos
+         (zero? ~n) ~zero
+         :else ~neg))
+
 (defn print-rating [rating]
   (arithmetic-if rating (println "Goodbook!") (println "Totallyindifferent.") (println "Runaway!")))
   
