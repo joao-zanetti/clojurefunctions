@@ -125,7 +125,7 @@
 (def f (future (Thread/sleep 10000) (println "done") 100))
 
 ; FUNCTIONS FOR PARAMETER
-(defn arithmetic-if [n pos-fzero-fneg-f] 
+(defn arithmetic-if [n pos-f zero-f neg-f] 
   (cond 
     (pos? n) (pos-f) 
     (zero? n) (zero-f) 
@@ -134,13 +134,16 @@
 (defn print-rating [rating] 
   (arithmetic-if rating #(println "Goodbook!") #(println "Totallyindifferent.") #(println "Runaway!")))
 
-(defn print-rating-b [rating]
-  (arithmetic-if rating '(println "Goodbook!") '(println "Totallyindifferent.") '(println "Runaway!")))
+(defmacro arithmetic-if [n pos zero neg] 
+  `(cond (pos? ~n) ~pos 
+         (zero? ~n) ~zero
+         :else ~neg))
 
-(defmacro recebe-funcoes [n fa fb fc]
-  (cond
-    (string? n) fa
-    (= n 2) fb
-    (= n 3) fc
-    :else ""))
+(defmacro arithmetic-if [n pos zero neg] 
+  (list 'cond (list 'pos? n) pos
+             (list 'zero? n) zero
+             :else neg))
+
+(defn print-rating [rating]
+  (arithmetic-if rating (println "Goodbook!") (println "Totallyindifferent.") (println "Runaway!")))
   
