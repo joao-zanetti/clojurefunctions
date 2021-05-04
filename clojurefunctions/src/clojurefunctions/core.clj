@@ -35,16 +35,16 @@
 (defrecord Oscar [category]
   Award
   (present [this recipient]
-           (prn (str "OSCAR " "Category: " (:category this) "  Recipient: " recipient))))
+    (prn (str "OSCAR " "Category: " (:category this) "  Recipient: " recipient))))
 
 (defrecord Canes [category]
   Award
   (present [this recipient]
-           (prn (str "CANES " "Category: " (:category this) "  Recipient: " recipient))))
+    (prn (str "CANES " "Category: " (:category this) "  Recipient: " recipient))))
 
 ;(let [oscar-ex (Oscar. "trhiller")  canes-ex (Canes. "documentary")] (present canes-ex "alo"))
 
-(defprotocol New-protocol 
+(defprotocol New-protocol
   (new-func [param]))
 
 (extend-protocol New-protocol
@@ -59,19 +59,19 @@
 
 
 ;;DESTRUCTURING 
-(defn dest [lista-doida] (let [[[_ segundo-do-primeiro] segundo] lista-doida] 
+(defn dest [lista-doida] (let [[[_ segundo-do-primeiro] segundo] lista-doida]
                            (prn segundo-do-primeiro) (prn segundo)))
 ;(dest [["1.1" "1.2"] "2"])
 
-(defn dest-map [mapa-doido] (let [{nome :nome email :email} mapa-doido] 
+(defn dest-map [mapa-doido] (let [{nome :nome email :email} mapa-doido]
                               (prn nome) (prn email)))
 ;(dest-map {:nome "jose" :email "tnc@hotmail"})
 
 ;NESTED
-(def austen {:name"JaneAusten" 
-             :parents {:father "George" 
-                       :mother "Cassandra"} 
-             :dates {:born 1775 
+(def austen {:name "JaneAusten"
+             :parents {:father "George"
+                       :mother "Cassandra"}
+             :dates {:born 1775
                      :died 1817}})
 
 ;; (let [{{dad :father mom :mother} :parents} austen]))
@@ -107,7 +107,7 @@
 (def inventory [{:title "Emma" :sold 51 :revenue 255}
                 {:title "2001" :sold 17 :revenue 170}])
 
-(defn sum-copies-sold [inv] (apply + (map :sold inv))) 
+(defn sum-copies-sold [inv] (apply + (map :sold inv)))
 (defn sum-revenue [inv] (apply + (map :revenue inv)))
 
 
@@ -116,33 +116,32 @@
         revenue-promise (promise)]
     (.start (Thread. #(deliver copies-promise (sum-copies-sold inventory))))
     (.start (Thread. #(deliver revenue-promise (sum-revenue inventory))))
-
     (.start ())
-                       ;; Do someotherstuffin thisthread...
+     ;; Do someotherstuffin thisthread...
     (println "Thetotalnumberof bookssoldis" @copies-promise)
     (println "Thetotalrevenueis " @revenue-promise)))
 
 (def f (future (Thread/sleep 10000) (println "done") 100))
 
 ; FUNCTIONS FOR PARAMETER
-(defn arithmetic-if [n pos-f zero-f neg-f] 
-  (cond 
-    (pos? n) (pos-f) 
-    (zero? n) (zero-f) 
+(defn arithmetic-if [n pos-f zero-f neg-f]
+  (cond
+    (pos? n) (pos-f)
+    (zero? n) (zero-f)
     (neg? n) (neg-f)))
 
-(defn print-rating [rating] 
+(defn print-rating [rating]
   (arithmetic-if rating #(println "Goodbook!") #(println "Totallyindifferent.") #(println "Runaway!")))
 
-(defmacro arithmetic-if [n pos zero neg] 
-  `(cond (pos? ~n) ~pos 
+(defmacro arithmetic-if [n pos zero neg]
+  `(cond (pos? ~n) ~pos
          (zero? ~n) ~zero
          :else ~neg))
 
-(defmacro arithmetic-if [n pos zero neg] 
+(defmacro arithmetic-if [n pos zero neg]
   (list 'cond (list 'pos? n) pos
-             (list 'zero? n) zero
-             :else neg))
+        (list 'zero? n) zero
+        :else neg))
 
 (defmacro arithmetic-if [n pos zero neg]
   `(cond (pos? ~n) ~pos
@@ -151,4 +150,38 @@
 
 (defn print-rating [rating]
   (arithmetic-if rating (println "Goodbook!") (println "Totallyindifferent.") (println "Runaway!")))
+
+
+
+
+
+;;ATTOOM
+
+(def atom-map (atom {}))
+
+(defn add-book [{title :title :as book}] (swap! atom-map #(assoc % title book)))
+
+(defn add-book [title] (swap! atom-map #(dissoc % title)))
+
+;;REFS
+
+(def by-title (ref {})) 
+
+(def total-copies (ref 0))
+
+(defn add-book [{title :title :as book}] 
+  (dosync (alter by-title #(assoc % titlebook)) 
+          (alter total-copies+ (:copies book))))
+
+;;AGENTS
+
+(def by-title (agent {}))
   
+(defn add-book [{title:title:as book}] 
+  (send
+   by-title
+   (fn [by-title-map]
+     (notify-inventory-change :add book)
+     (assoc by-title-map title book))))
+
+
