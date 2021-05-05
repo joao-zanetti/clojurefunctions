@@ -1,6 +1,16 @@
 (ns clojurefunctions.core
   (:require [clojurefunctions.specs :as sp]))
 
+
+;; RECCUR
+(def factorial
+  (fn [n]
+    (loop [cnt n
+           acc 1]
+       (if (zero? cnt)
+            acc
+          (recur (dec cnt) (* acc cnt))
+
 ;;MULTIMETHOD
 (defn dispatch-book-format [book]
   (cond
