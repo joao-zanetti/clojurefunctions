@@ -8,6 +8,7 @@
 (def gt-10-lt-100 (s/and number? #(> % 10) #(< % 100)))
 
 
+(s/def ::title (s/and #(string? %) #(not (number? %))))
 
 ;OR
 (def n-or-s (s/or :a-number number? :a-string string?))
