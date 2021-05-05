@@ -9,7 +9,7 @@
            acc 1]
        (if (zero? cnt)
             acc
-          (recur (dec cnt) (* acc cnt))
+          (recur (dec cnt) (* acc cnt))))))
 
 ;;MULTIMETHOD
 (defn dispatch-book-format [book]
@@ -180,14 +180,16 @@
 (def total-copies (ref 0))
 
 (defn add-book [{title :title :as book}] 
-  (dosync (alter by-title #(assoc % titlebook)) 
-          (alter total-copies+ (:copies book))))
+  (dosync (alter by-title #(assoc % title book)) 
+          (alter total-copies + (:copies book))))
 
 ;;AGENTS
 
+(defn notify-inventory-change [key-acao book] (when (= key-acao :add) (println "NOTIFY")))
+
 (def by-title (agent {}))
   
-(defn add-book [{title:title:as book}] 
+(defn add-book [{title :title :as book}] 
   (send
    by-title
    (fn [by-title-map]
